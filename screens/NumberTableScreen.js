@@ -3,15 +3,21 @@ import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, Keyboard
 import { db } from "../database/db";
 import NumberBar from "../components/NumberBar";
 import { Ionicons } from '@expo/vector-icons';
+import CustomAlert from "../components/CustomAlert";
 
 export default function NumberTableScreen() {
   const [numbers, setNumbers] = useState([]);
   const [inputNumbers, setInputNumbers] = useState("");
   const [points, setPoints] = useState(1);
+  const [alertConfig, setAlertConfig] = useState({ visible: false, title: "", message: "", type: "info" });
 
   useEffect(() => {
     loadNumbers();
   }, []);
+
+  const showAlert = (title, message, type = "info") => {
+    setAlertConfig({ visible: true, title, message, type });
+  };
 
   const loadNumbers = () => {
     const rows = db.getAllSync(
@@ -22,7 +28,7 @@ export default function NumberTableScreen() {
 
   const addNumbers = () => {
     if (!inputNumbers.trim()) {
-      alert("Vui lòng nhập số!");
+      showAlert("Thiếu dữ liệu", "Vui lòng nhập số!", "warning");
       return;
     }
 
@@ -48,9 +54,9 @@ export default function NumberTableScreen() {
       setInputNumbers("");
       Keyboard.dismiss();
       loadNumbers();
-      alert(`Đã thêm thành công!`);
+      showAlert("Thành công", `Đã thêm thành công các số vào bảng!`, "success");
     } else {
-      alert("Không tìm thấy số hợp lệ. Vui lòng nhập định dạng: 12, 34, 56");
+      showAlert("Lỗi định dạng", "Không tìm thấy số hợp lệ. Vui lòng nhập định dạng: 12, 34, 56", "error");
     }
   };
 
@@ -114,6 +120,14 @@ export default function NumberTableScreen() {
           />
         )}
       </View>
+
+      <CustomAlert 
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        onClose={() => setAlertConfig({ ...alertConfig, visible: false })}
+      />
     </KeyboardAvoidingView>
   );
 }
