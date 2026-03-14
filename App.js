@@ -1,4 +1,6 @@
 import React,{useEffect} from "react";
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 
 import TabNavigator from "./navigation/TabNavigator";
@@ -11,11 +13,19 @@ export default function App(){
   },[]);
 
   return(
-
-    <NavigationContainer>
-      <TabNavigator/>
-    </NavigationContainer>
-
+    <View style={styles.container}>
+      <StatusBar style="light" />
+      <NavigationContainer>
+        <TabNavigator/>
+      </NavigationContainer>
+    </View>
   );
 
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#110F19',
+  },
+});

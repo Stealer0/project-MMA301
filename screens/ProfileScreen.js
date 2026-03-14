@@ -2,27 +2,71 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { db } from "../database/db";
 import { Ionicons } from '@expo/vector-icons';
+import CustomAlert from "../components/CustomAlert";
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ProfileScreen() {
   const [name, setName] = useState("");
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
   const [year, setYear] = useState("");
+  
+  const [alertConfig, setAlertConfig] = useState({ visible: false, title: "", message: "", type: "info" });
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    if (isFocused) {
+      loadUserData();
+    }
+  }, [isFocused]);
+
+  const loadUserData = () => {
+    try {
+      const user = db.getFirstSync(`SELECT * FROM users ORDER BY id DESC LIMIT 1`);
+      if (user) {
+        setName(user.name || "");
+        setDay(user.birth_day ? user.birth_day.toString() : "");
+        setMonth(user.birth_month ? user.birth_month.toString() : "");
+        setYear(user.birth_year ? user.birth_year.toString() : "");
+      }
+    } catch (error) {
+      console.error("Error loading user data:", error);
+    }
+  };
+
+  const showAlert = (title, message, type = "info") => {
+    setAlertConfig({ visible: true, title, message, type });
+  };
 
   const save = () => {
     if (!name || !day || !month || !year) {
-      alert("Vui lòng điền đủ thông tin");
+      showAlert("Thiếu thông tin", "Vui lòng điền đủ thông tin để lưu hồ sơ.", "warning");
       return;
     }
-    db.runSync(
-      `INSERT INTO users (name,birth_day,birth_month,birth_year) VALUES (?,?,?,?)`,
-      [name, parseInt(day), parseInt(month), parseInt(year)],
-    );
-    setName("");
-    setDay("");
-    setMonth("");
-    setYear("");
-    alert("Đã lưu hồ sơ thành công!");
+
+    try {
+      // Check if user exists
+      const existingUser = db.getFirstSync(`SELECT id FROM users LIMIT 1`);
+      
+      if (existingUser) {
+        // Update existing
+        db.runSync(
+          `UPDATE users SET name = ?, birth_day = ?, birth_month = ?, birth_year = ? WHERE id = ?`,
+          [name, parseInt(day), parseInt(month), parseInt(year), existingUser.id]
+        );
+      } else {
+        // Insert new
+        db.runSync(
+          `INSERT INTO users (name, birth_day, birth_month, birth_year) VALUES (?, ?, ?, ?)`,
+          [name, parseInt(day), parseInt(month), parseInt(year)]
+        );
+      }
+      
+      showAlert("Thành công", "Thông tin hồ sơ của bạn đã được lưu lại.", "success");
+    } catch (error) {
+      console.error("Error saving user data:", error);
+      showAlert("Lỗi", "Không thể lưu thông tin. Vui lòng thử lại sau.", "error");
+    }
   };
 
   return (
@@ -77,11 +121,19 @@ export default function ProfileScreen() {
             />
           </View>
 
-          <TouchableOpacity style={styles.saveButton} onPress={save}>
+          <TouchableOpacity style={styles.saveButton} onPress={save} activeOpacity={0.8}>
             <Text style={styles.saveButtonText}>Lưu hồ sơ</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
+
+      <CustomAlert 
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        onClose={() => setAlertConfig({ ...alertConfig, visible: false })}
+      />
     </KeyboardAvoidingView>
   );
 }

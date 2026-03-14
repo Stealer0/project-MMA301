@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, Platform } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Platform } from "react-native";
 import { db } from "../database/db";
 import { Ionicons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import CustomAlert from "../components/CustomAlert";
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState([]);
+  const [alertConfig, setAlertConfig] = useState({ visible: false, title: "", message: "", type: "info" });
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -21,21 +23,21 @@ export default function HistoryScreen() {
     setHistory(rows);
   };
 
+  const showAlert = (title, message, type = "info", onConfirm = null, confirmText = "") => {
+    setAlertConfig({ visible: true, title, message, type, onConfirm, confirmText });
+  };
+
   const clearHistory = () => {
-    Alert.alert(
+    showAlert(
       "Xóa lịch sử",
-      "Bạn có chắc chắn muốn xóa toàn bộ lịch sử bói toán không?",
-      [
-        { text: "Hủy", style: "cancel" },
-        { 
-          text: "Xóa", 
-          style: "destructive",
-          onPress: () => {
-            db.runSync(`DELETE FROM predictions`);
-            loadHistory();
-          }
-        }
-      ]
+      "Bạn có chắc chắn muốn xóa toàn bộ lịch sử bói toán không? Hành động này không thể hoàn tác.",
+      "confirm",
+      () => {
+        db.runSync(`DELETE FROM predictions`);
+        loadHistory();
+        setAlertConfig({ visible: false });
+      },
+      "Xóa"
     );
   };
 
@@ -48,7 +50,7 @@ export default function HistoryScreen() {
         </View>
         
         {history.length > 0 && (
-          <TouchableOpacity style={styles.deleteButton} onPress={clearHistory}>
+          <TouchableOpacity style={styles.deleteButton} onPress={clearHistory} activeOpacity={0.7}>
             <Ionicons name="trash-outline" size={18} color="#FF6B6B" />
             <Text style={styles.deleteText}>Xóa</Text>
           </TouchableOpacity>
@@ -81,6 +83,16 @@ export default function HistoryScreen() {
           )}
         />
       )}
+
+      <CustomAlert 
+        visible={alertConfig.visible}
+        title={alertConfig.title}
+        message={alertConfig.message}
+        type={alertConfig.type}
+        onConfirm={alertConfig.onConfirm}
+        confirmText={alertConfig.confirmText}
+        onClose={() => setAlertConfig({ ...alertConfig, visible: false })}
+      />
     </View>
   );
 }
