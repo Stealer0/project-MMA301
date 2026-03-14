@@ -1,11 +1,21 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import TabNavigator from "../navigation/TabNavigator";
+import { initDB } from "../database/db";
+import { useEffect } from 'react';
 
 export default function App() {
+  useEffect(()=>{
+    initDB();
+  },[]);
+
   return (
     <View style={styles.container}>
-      <Text>Open up App.js tnno start working on your app!</Text>
-      <StatusBar style="auto" />
+      <StatusBar style="light" />
+      <NavigationContainer>
+        <TabNavigator/>
+      </NavigationContainer>
     </View>
   );
 }
@@ -13,8 +23,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#110F19',
   },
 });
