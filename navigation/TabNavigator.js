@@ -11,8 +11,8 @@ import ProfileScreen from "../screens/ProfileScreen";
 import CalculatorScreen from "../screens/CalculatorScreen";
 import AIAnalysisScreen from "../screens/AIAnalysisScreen";
 import IntroScreen from "../screens/IntroScreen";
-
-const Tab = createBottomTabNavigator();
+import DailyCardScreen from "../screens/DailyCardScreen";
+import WeeklyReportScreen from "../screens/WeeklyReportScreen";const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function HomeStack() {
@@ -68,6 +68,12 @@ export default function TabNavigator(){
           } else if (route.name === 'Cá Nhân') {
             iconName = focused ? 'person' : 'person-outline';
           }
+                    else if (route.name === 'Tarot') {
+  iconName = focused ? 'moon' : 'moon-outline';
+}
+         else if (route.name === 'Weekly Report') {
+  iconName = focused ? 'moon' : 'moon-outline';
+}
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -104,6 +110,16 @@ export default function TabNavigator(){
       <Tab.Screen name="Tính Toán" component={CalcStack} />
       <Tab.Screen name="Dự Báo" component={ForecastStack} />
       <Tab.Screen name="Cá Nhân" component={ProfileStack} />
+          <Tab.Screen
+  name="Tarot"
+  component={DailyCardScreen}
+  options={{ headerShown: false }}
+/>
+     <Tab.Screen
+  name="Weekly Report"
+  component={WeeklyReportScreen}
+  options={{ headerShown: false }}
+/>
     </Tab.Navigator>
   );
-}
+}
