@@ -16,7 +16,7 @@ import { db } from "../database/db";
 import { Ionicons } from "@expo/vector-icons";
 import CustomAlert from "../components/CustomAlert";
 
-const GEMINI_API_KEY = "AIzaSyBCDqMmDVolhpqtkIKbD8XwGB1IrpWwyvY";
+const GEMINI_API_KEY = "AIzaSyDsX9_JutoDGyshSfH23ZAd0-T0AOFkkWU";
 
 export default function FortuneScreen() {
   const [question, setQuestion] = useState("");

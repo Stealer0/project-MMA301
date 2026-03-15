@@ -7,6 +7,9 @@ import NumberTableScreen from "../screens/NumberTableScreen";
 import HistoryScreen from "../screens/HistoryScreen";
 import DayNumberScreen from "../screens/DayNumberScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import CalculatorScreen from "../screens/CalculatorScreen";
+import AIAnalysisScreen from "../screens/AIAnalysisScreen";
+import IntroScreen from "../screens/IntroScreen";
 
 const Tab = createBottomTabNavigator();
 
@@ -18,14 +21,20 @@ export default function TabNavigator(){
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Bói số') {
+          if (route.name === 'Thông Tin') {
+            iconName = focused ? 'book' : 'book-outline';
+          } else if (route.name === 'Thần Số Học') {
+            iconName = focused ? 'calculator' : 'calculator-outline';
+          } else if (route.name === 'Chuyên Gia AI') {
+            iconName = focused ? 'planet' : 'planet-outline';
+          } else if (route.name === 'Bói số') {
             iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'Bảng') {
             iconName = focused ? 'grid' : 'grid-outline';
           } else if (route.name === 'Lịch sử') {
             iconName = focused ? 'time' : 'time-outline';
           } else if (route.name === 'Số ngày') {
-            iconName = focused ? 'star' : 'star-outline';
+            iconName = focused ? 'calendar' : 'calendar-outline';
           } else if (route.name === 'Hồ sơ') {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -38,6 +47,10 @@ export default function TabNavigator(){
           backgroundColor: '#161421',
           borderTopWidth: 0,
         },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '500',
+        },
         headerStyle: {
           backgroundColor: '#110F19',
           elevation: 0,
@@ -47,12 +60,17 @@ export default function TabNavigator(){
         headerTintColor: '#CB9F42',
         headerTitleStyle: {
           fontWeight: 'bold',
+          fontSize: 18,
         },
+        headerTitleAlign: 'center',
         sceneStyle: {
           backgroundColor: '#110F19'
         }
       })}
     >
+      <Tab.Screen name="Thông Tin" component={IntroScreen} />
+      <Tab.Screen name="Thần Số Học" component={CalculatorScreen} />
+      <Tab.Screen name="Chuyên Gia AI" component={AIAnalysisScreen} />
       <Tab.Screen name="Bói số" component={FortuneScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Bảng" component={NumberTableScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Lịch sử" component={HistoryScreen} options={{ headerShown: false }} />
