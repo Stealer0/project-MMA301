@@ -85,8 +85,8 @@ const CalculatorScreen = ({ navigation }) => {
     if (!day || !month || !year) return Alert.alert("Lỗi", "Vui lòng nhập Ngày, Tháng, Năm sinh");
     if (!isValidDate(day, month, year)) return Alert.alert("Lỗi", "Ngày sinh không hợp lệ");
     const sum = day.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                year.split('').reduce((a, b) => a + parseInt(b, 10), 0);
+      month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+      year.split('').reduce((a, b) => a + parseInt(b, 10), 0);
     setLifePathNumber(reduceToSingleDigit(sum));
     saveUserData();
   };
@@ -103,10 +103,10 @@ const CalculatorScreen = ({ navigation }) => {
 
   const calculateMaturity = () => {
     if (!day || !month || !year || !name) return Alert.alert("Lỗi", "Nhập đủ Ngày, Tháng, Năm sinh và Họ tên!");
-    
+
     const lpSum = day.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                  month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                  year.split('').reduce((a, b) => a + parseInt(b, 10), 0);
+      month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+      year.split('').reduce((a, b) => a + parseInt(b, 10), 0);
     const lp = reduceToSingleDigit(lpSum);
 
     let dsSum = 0;
@@ -140,7 +140,7 @@ const CalculatorScreen = ({ navigation }) => {
 
   const calculatePersonal = () => {
     if (!day || !month) return Alert.alert("Lỗi", "Vui lòng nhập Ngày và Tháng sinh");
-    
+
     const today = new Date();
     const currentYear = today.getFullYear();
     const currentMonth = today.getMonth() + 1; // 1-indexed
@@ -148,15 +148,15 @@ const CalculatorScreen = ({ navigation }) => {
 
     // Personal Year = Day + Month + Current Year
     const pySum = day.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                  month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                  currentYear.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+      month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+      currentYear.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
     const py = reduceToSingleDigit(pySum);
     setPersonalYearNumber(py);
 
     // Personal Day = Personal Year + Today Day + Today Month
-    const pdSum = py + 
-                  currentDay.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0) +
-                  currentMonth.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+    const pdSum = py +
+      currentDay.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+      currentMonth.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
     setPersonalDayNumber(reduceToSingleDigit(pdSum));
     saveUserData();
   };
@@ -165,7 +165,7 @@ const CalculatorScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
-        
+
         {/* Navigation to sub-screens */}
         <View style={styles.navRow}>
           <TouchableOpacity style={styles.navBtn} onPress={() => navigation.navigate('AIAnalysis')}>
@@ -173,8 +173,8 @@ const CalculatorScreen = ({ navigation }) => {
             <Text style={styles.navBtnText}>Chuyên Gia AI</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.navBtn} onPress={() => navigation.navigate('NumberTable')}>
-            <Ionicons name="grid-outline" size={20} color="#0A0910" />
-            <Text style={styles.navBtnText}>Bảng Số</Text>
+            <Ionicons name="pencil-outline" size={20} color="#0A0910" />
+            <Text style={styles.navBtnText}>Ghi Chú</Text>
           </TouchableOpacity>
         </View>
 
@@ -219,7 +219,7 @@ const CalculatorScreen = ({ navigation }) => {
             <Text style={styles.calcBtnText}>Tính Toán</Text>
           </TouchableOpacity>
           {lifePathNumber !== null && (
-             <View style={styles.resultContainer}>
+            <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Chỉ số: {lifePathNumber}</Text>
               <View style={styles.resultBox}>
                 <Text style={styles.resultName}>Số {lifePathNumber} - {numerologyNames[lifePathNumber]}</Text>
@@ -244,7 +244,7 @@ const CalculatorScreen = ({ navigation }) => {
             <Text style={styles.calcBtnText}>Tính Toán</Text>
           </TouchableOpacity>
           {destinyNumber !== null && (
-             <View style={styles.resultContainer}>
+            <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Chỉ số: {destinyNumber}</Text>
               <View style={styles.resultBox}>
                 <Text style={styles.resultName}>Số {destinyNumber} - {numerologyNames[destinyNumber]}</Text>
@@ -274,7 +274,7 @@ const CalculatorScreen = ({ navigation }) => {
             <Text style={styles.calcBtnText}>Tính Toán</Text>
           </TouchableOpacity>
           {maturityNumber !== null && (
-             <View style={styles.resultContainer}>
+            <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Chỉ số: {maturityNumber}</Text>
               <View style={styles.resultBox}>
                 <Text style={styles.resultName}>Số {maturityNumber} - {numerologyNames[maturityNumber]}</Text>
@@ -299,7 +299,7 @@ const CalculatorScreen = ({ navigation }) => {
             <Text style={styles.calcBtnText}>Tính Toán</Text>
           </TouchableOpacity>
           {attitudeNumber !== null && (
-             <View style={styles.resultContainer}>
+            <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Chỉ số: {attitudeNumber}</Text>
               <View style={styles.resultBox}>
                 <Text style={styles.resultName}>Số {attitudeNumber} - {numerologyNames[attitudeNumber]}</Text>
@@ -324,7 +324,7 @@ const CalculatorScreen = ({ navigation }) => {
             <Text style={styles.calcBtnText}>Tính Toán</Text>
           </TouchableOpacity>
           {balanceNumber !== null && (
-             <View style={styles.resultContainer}>
+            <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Chỉ số: {balanceNumber}</Text>
               <View style={styles.resultBox}>
                 <Text style={styles.resultName}>Số {balanceNumber} - {numerologyNames[balanceNumber]}</Text>
@@ -348,14 +348,14 @@ const CalculatorScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.calcBtn} onPress={calculatePersonal}>
             <Text style={styles.calcBtnText}>Xem Năng Lượng Hôm Nay</Text>
           </TouchableOpacity>
-          
+
           {personalYearNumber !== null && (
             <View style={styles.resultContainer}>
               <Text style={styles.resultTitle}>Năm Cá Nhân: {personalYearNumber}</Text>
               <View style={styles.resultBox}>
                 <Text style={styles.resultDesc}>{numerologyMeaning.personalYear[personalYearNumber]}</Text>
               </View>
-              
+
               <View style={{ marginTop: 20 }}>
                 <Text style={styles.resultTitle}>Ngày Cá Nhân: {personalDayNumber}</Text>
                 <View style={styles.resultBox}>
@@ -384,15 +384,15 @@ const styles = StyleSheet.create({
   cardSubtitle: { fontSize: 14, color: '#A09EAD', marginBottom: 20, lineHeight: 20 },
   inputWrapper: { marginBottom: 20 },
   inputLabel: { fontSize: 14, fontWeight: '600', color: '#E0E0E0', marginBottom: 8 },
-  input: { 
-    backgroundColor: '#110F19', 
+  input: {
+    backgroundColor: '#110F19',
     borderRadius: 8, height: 48, paddingHorizontal: 16, fontSize: 16,
     borderWidth: 1, borderColor: '#332D41', color: '#FFF'
   },
   dateInputContainer: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20 },
   dateInputWrapper: { width: '31%' },
-  inputDate: { 
-    backgroundColor: '#110F19', 
+  inputDate: {
+    backgroundColor: '#110F19',
     borderRadius: 8, height: 48, paddingHorizontal: 12, fontSize: 16, textAlign: 'center',
     borderWidth: 1, borderColor: '#332D41', color: '#FFF'
   },

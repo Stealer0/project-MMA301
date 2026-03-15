@@ -5,7 +5,7 @@ import { db } from '../database/db';
 import axios from 'axios';
 import { isValidDate } from '../utils/validation';
 
-const GEMINI_API_KEY = "AIzaSyAFnPQG-5RcxmdOMeS0riHD2cwFbz3JRDk";
+const GEMINI_API_KEY = "AIzaSyBYTGDFVXlSCC64mhIGes8O1D-bjF2K97w";
 
 const letterToNumber = {
   a: 1, j: 1, s: 1,
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 16,
-    paddingTop: 40,
+    paddingTop: 0,
   },
   cardInfo: {
     backgroundColor: '#1B1924',

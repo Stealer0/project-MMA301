@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
+  ScrollView,
 } from "react-native";
 import { drawDailyCard } from "../services/tarotService";
 import { cards } from "../data/card";
@@ -32,7 +33,7 @@ const NUMBER_SYMBOLS = {
   6: "♡", 7: "⊛", 8: "∞", 9: "◉",
 };
 
-export default function DailyCardScreen() {
+export default function DailyCardScreen({ navigation }) {
   const [card, setCard] = useState(null);
   const [revealed, setRevealed] = useState(false);
 const [aiInsight, setAiInsight] = useState("");
@@ -64,7 +65,11 @@ const handleReset = () => {
   setLoadingAI(false);
 };
   return (
-    <View style={styles.container}>
+    <ScrollView 
+      style={styles.scrollView} 
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       {/* Stars background decoration */}
       <View style={styles.starsRow}>
         {["·", "✦", "·", "·", "✦", "·", "✦", "·", "·"].map((s, i) => (
@@ -156,28 +161,40 @@ const handleReset = () => {
           <Text style={styles.drawButtonIcon}>✦</Text>
         </TouchableOpacity>
       ) : (
-        <TouchableOpacity style={styles.resetButton} onPress={handleReset} activeOpacity={0.8}>
-          <Text style={styles.resetButtonText}>↺  Rút Lại</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.resetButton} onPress={handleReset} activeOpacity={0.8}>
+            <Text style={styles.resetButtonText}>↺  Rút Lại</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.weeklyButton} 
+            onPress={() => navigation.navigate("WeeklyReport")} 
+            activeOpacity={0.8}
+          >
+            <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+          </TouchableOpacity>
+        </View>
       )}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  scrollView: {
     flex: 1,
     backgroundColor: COLORS.bg,
+  },
+  container: {
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 32,
-    paddingVertical: 40,
+    paddingVertical: 10,
+    minHeight: "100%",
   },
 
   // Stars
   starsRow: {
     position: "absolute",
-    top: 60,
+    top: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
@@ -379,6 +396,34 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: "Georgia",
     color: COLORS.textSecondary,
+    letterSpacing: 1,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    gap: 12,
+    width: "100%",
+  },
+  resetButton: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+    borderRadius: 4,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  weeklyButton: {
+    flex: 1,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.goldDim,
+    borderRadius: 4,
+    paddingVertical: 14,
+    alignItems: "center",
+  },
+  weeklyButtonText: {
+    fontSize: 14,
+    fontFamily: "Georgia",
+    color: COLORS.goldLight,
     letterSpacing: 1,
   },
   aiCard: {

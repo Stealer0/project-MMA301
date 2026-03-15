@@ -196,7 +196,7 @@ export default function WeeklyReportScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: COLORS.bg },
-  content: { padding: 20, paddingTop: 56, paddingBottom: 48 },
+  content: { padding: 20, paddingTop: 0, paddingBottom: 48 },
 
   header: { alignItems: "center", marginBottom: 28 },
   headerRune: { fontSize: 32, color: COLORS.goldDim, marginBottom: 12 },

@@ -51,6 +51,15 @@ function ProfileStack() {
   );
 }
 
+function TarotStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="DailyCard" component={DailyCardScreen} />
+      <Stack.Screen name="WeeklyReport" component={WeeklyReportScreen} />
+    </Stack.Navigator>
+  );
+}
+
 export default function TabNavigator(){
 
   return(
@@ -71,9 +80,6 @@ export default function TabNavigator(){
                     else if (route.name === 'Tarot') {
   iconName = focused ? 'moon' : 'moon-outline';
 }
-         else if (route.name === 'Weekly Report') {
-  iconName = focused ? 'moon' : 'moon-outline';
-}
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
@@ -82,8 +88,8 @@ export default function TabNavigator(){
         tabBarStyle: {
           backgroundColor: '#161421',
           borderTopWidth: 0,
-          height: 60,
-          paddingBottom: 8,
+          height: 75,
+          paddingBottom: 22,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -109,17 +115,12 @@ export default function TabNavigator(){
       <Tab.Screen name="Trang Chủ" component={HomeStack} />
       <Tab.Screen name="Tính Toán" component={CalcStack} />
       <Tab.Screen name="Dự Báo" component={ForecastStack} />
+      <Tab.Screen
+        name="Tarot"
+        component={TarotStack}
+        options={{ headerShown: false }}
+      />
       <Tab.Screen name="Cá Nhân" component={ProfileStack} />
-          <Tab.Screen
-  name="Tarot"
-  component={DailyCardScreen}
-  options={{ headerShown: false }}
-/>
-     <Tab.Screen
-  name="Weekly Report"
-  component={WeeklyReportScreen}
-  options={{ headerShown: false }}
-/>
     </Tab.Navigator>
   );
 }

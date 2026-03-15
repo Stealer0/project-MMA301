@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getLast7Cards } from "./tarotService";
 
-const API_KEY = "AIzaSyBO6FUddg8-igheSY_6NhvKAPyYc9H45YQ";
+const API_KEY = "AIzaSyBYTGDFVXlSCC64mhIGes8O1D-bjF2K97w";
 
 export const getWeeklyInsight = async () => {
 
