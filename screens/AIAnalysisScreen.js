@@ -3,8 +3,9 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAr
 import { Ionicons } from '@expo/vector-icons';
 import { db } from '../database/db';
 import axios from 'axios';
+import { isValidDate } from '../utils/validation';
 
-const GEMINI_API_KEY = "AIzaSyDsX9_JutoDGyshSfH23ZAd0-T0AOFkkWU";
+const GEMINI_API_KEY = "AIzaSyAFnPQG-5RcxmdOMeS0riHD2cwFbz3JRDk";
 
 const letterToNumber = {
   a: 1, j: 1, s: 1,
@@ -120,6 +121,11 @@ const AIAnalysisScreen = () => {
       return;
     }
 
+    if (!isValidDate(day, month, year)) {
+      alert("Ngày sinh không hợp lệ. Vui lòng kiểm tra lại.");
+      return;
+    }
+
     try {
       db.runSync(
         'INSERT INTO users (name, birth_day, birth_month, birth_year) VALUES (?, ?, ?, ?)',
@@ -133,8 +139,10 @@ const AIAnalysisScreen = () => {
 
     const calculatedNumbers = calculateNumbers(name, day, month, year);
 
+    const todayDate = new Date().toLocaleDateString('vi-VN');
     const prompt = `Bạn là một chuyên gia Thần số học chuyên nghiệp, thấu hiểu sâu sắc và có khả năng giải thích dễ hiểu.
     Tôi có một khách hàng tên là ${name}, sinh ngày ${day}/${month}/${year}.
+    Ngày hôm nay là: ${todayDate}.
     
     Hãy phân tích chi tiết các chỉ số thần số học của họ:
     - Số Đường Đời: ${calculatedNumbers.lifePath}
@@ -148,7 +156,7 @@ const AIAnalysisScreen = () => {
     1. Đưa ra tổng quan về tính cách, điểm mạnh, điểm yếu dựa trên sự kết hợp của các con số này.
     2. Tập trung vào số đường đời và số vận mệnh là 2 chỉ số quan trọng nhất.
     3. Trình bày dạng các đoạn văn ngắn gọn, dễ đọc, mạch lạc (không quá dài dòng). 
-    4. Thêm một số lời khuyên để giúp họ phát huy tối đa thế mạnh và cải thiện điểm yếu trong năm nay.
+    4. Đặc biệt: Hãy kết hợp với năng lượng của ngày hôm nay (${todayDate}) để đưa ra lời khuyên cụ thể và truyền cảm hứng nhất cho tôi ngay lúc này.
     
     Vui lòng viết bằng tiếng Việt, giọng điệu ấm áp, đồng cảm và truyền cảm hứng.`;
 

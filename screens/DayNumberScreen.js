@@ -14,9 +14,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import CustomAlert from "../components/CustomAlert";
 
-const GEMINI_API_KEY = "AIzaSyBmlFZ5UVoo-LHGwvIIPNzsDPhtd_GkXHI";
+const GEMINI_API_KEY = "AIzaSyAFnPQG-5RcxmdOMeS0riHD2cwFbz3JRDk";
 
-export default function DayNumberScreen() {
+export default function DayNumberScreen({ navigation }) {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
@@ -43,7 +43,7 @@ export default function DayNumberScreen() {
         .split("")
         .reduce((acc, val) => acc + parseInt(val), 0);
     let total = sumDigits(d) + sumDigits(m) + sumDigits(y);
-    while (total > 9 && total !== 11 && total !== 22 && total !== 33) {
+    while (total > 11 && total !== 22) {
       total = sumDigits(total);
     }
     return total;
@@ -162,6 +162,17 @@ Life Path Number: ${lpNum}
           Dựa trên ngày sinh: {user.birth_day.toString().padStart(2, "0")}/
           {user.birth_month.toString().padStart(2, "0")}/{user.birth_year}
         </Text>
+      </View>
+
+      {/* Navigation to sub-screen */}
+      <View style={{ paddingHorizontal: 20, marginBottom: 16 }}>
+        <TouchableOpacity 
+          style={styles.navBtn} 
+          onPress={() => navigation.navigate('Fortune')}
+        >
+          <Ionicons name="home-outline" size={20} color="#0A0910" />
+          <Text style={styles.navBtnText}>Bói Số Huyền Bí</Text>
+        </TouchableOpacity>
       </View>
 
       {loading ? (
@@ -456,4 +467,18 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 8,
   },
+  navBtn: { 
+    backgroundColor: '#CB9F42', 
+    borderRadius: 12, 
+    padding: 14, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    justifyContent: 'center' 
+  },
+  navBtnText: { 
+    color: '#0A0910', 
+    fontWeight: 'bold', 
+    marginLeft: 8, 
+    fontSize: 15 
+  }
 });

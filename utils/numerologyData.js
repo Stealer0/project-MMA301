@@ -81,5 +81,29 @@ export const numerologyMeaning = {
     "7": "Bạn có xu hướng tìm sự bình yên trong suy ngẫm và học hỏi.",
     "8": "Bạn đối mặt với khó khăn bằng sự quyết đoán và tư duy chiến lược.",
     "9": "Bạn giữ cân bằng bằng cách nhìn nhận vấn đề từ góc độ rộng lớn và nhân văn."
+  },
+
+  "personalYear": {
+    "1": "Năm của sự khởi đầu mới, gieo hạt và nỗ lực cá nhân mạnh mẽ.",
+    "2": "Năm của sự kiên nhẫn, hợp tác và chờ đợi kết quả nảy mầm.",
+    "3": "Năm của sự sáng tạo, mở rộng các mối quan hệ xã hội và tự thể hiện.",
+    "4": "Năm của sự làm việc chăm chỉ, kỷ luật và xây dựng nền tảng.",
+    "5": "Năm của sự thay đổi, tự do và những bước ngoặt bất ngờ.",
+    "6": "Năm của gia đình, trách nhiệm và sự phục vụ cộng đồng.",
+    "7": "Năm của sự chiêm nghiệm, học hỏi và phát triển nội tâm sâu sắc.",
+    "8": "Năm của thành quả, quyền lực và sự bứt phá về tài chính.",
+    "9": "Năm của sự hoàn tất, buông bỏ và chuẩn bị cho chu kỳ mới."
+  },
+
+  "personalDay": {
+    "1": "Ngày để bắt đầu việc mới hoặc quyết định độc lập.",
+    "2": "Ngày để lắng nghe, thấu hiểu và làm việc nhóm.",
+    "3": "Ngày tuyệt vời cho giao tiếp, sáng tạo và vui chơi.",
+    "4": "Ngày để lập kế hoạch, dọn dẹp và làm việc chi tiết.",
+    "5": "Ngày của sự linh hoạt, di chuyển hoặc thay đổi lịch trình.",
+    "6": "Ngày dành cho người thân, chăm sóc nhà cửa và yêu thương.",
+    "7": "Ngày để ở một mình, đọc sách hoặc tĩnh tâm suy nghĩ.",
+    "8": "Ngày tập trung vào công việc, mục tiêu và kết quả cụ thể.",
+    "9": "Ngày để kết thúc các việc dang dở và lòng vị tha."
   }
 };

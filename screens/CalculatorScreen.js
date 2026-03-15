@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAr
 import { Ionicons } from '@expo/vector-icons';
 import { db } from '../database/db';
 import { numerologyNames, numerologyMeaning } from '../utils/numerologyData';
+import { isValidDate } from '../utils/validation';
 
 const reduceToSingleDigit = (num) => {
   if (!num) return 0;
@@ -25,7 +26,7 @@ const letterToNumber = {
   i: 9, r: 9
 };
 
-const CalculatorScreen = () => {
+const CalculatorScreen = ({ navigation }) => {
   // Common states
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
@@ -39,6 +40,8 @@ const CalculatorScreen = () => {
   const [maturityNumber, setMaturityNumber] = useState(null);
   const [attitudeNumber, setAttitudeNumber] = useState(null);
   const [balanceNumber, setBalanceNumber] = useState(null);
+  const [personalYearNumber, setPersonalYearNumber] = useState(null);
+  const [personalDayNumber, setPersonalDayNumber] = useState(null);
 
   useEffect(() => {
     loadUserData();
@@ -72,6 +75,7 @@ const CalculatorScreen = () => {
 
   const calculateBirthday = () => {
     if (!day) return Alert.alert("Lỗi", "Vui lòng nhập Ngày sinh");
+    if (parseInt(day) < 1 || parseInt(day) > 31) return Alert.alert("Lỗi", "Ngày sinh không hợp lệ");
     const result = reduceToSingleDigit(day);
     setBirthdayNumber(result);
     saveUserData();
@@ -79,6 +83,7 @@ const CalculatorScreen = () => {
 
   const calculateLifePath = () => {
     if (!day || !month || !year) return Alert.alert("Lỗi", "Vui lòng nhập Ngày, Tháng, Năm sinh");
+    if (!isValidDate(day, month, year)) return Alert.alert("Lỗi", "Ngày sinh không hợp lệ");
     const sum = day.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
                 month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
                 year.split('').reduce((a, b) => a + parseInt(b, 10), 0);
@@ -133,11 +138,46 @@ const CalculatorScreen = () => {
     saveUserData();
   };
 
+  const calculatePersonal = () => {
+    if (!day || !month) return Alert.alert("Lỗi", "Vui lòng nhập Ngày và Tháng sinh");
+    
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth() + 1; // 1-indexed
+    const currentDay = today.getDate();
+
+    // Personal Year = Day + Month + Current Year
+    const pySum = day.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+                  month.split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+                  currentYear.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+    const py = reduceToSingleDigit(pySum);
+    setPersonalYearNumber(py);
+
+    // Personal Day = Personal Year + Today Day + Today Month
+    const pdSum = py + 
+                  currentDay.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0) +
+                  currentMonth.toString().split('').reduce((a, b) => a + parseInt(b, 10), 0);
+    setPersonalDayNumber(reduceToSingleDigit(pdSum));
+    saveUserData();
+  };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
         
+        {/* Navigation to sub-screens */}
+        <View style={styles.navRow}>
+          <TouchableOpacity style={styles.navBtn} onPress={() => navigation.navigate('AIAnalysis')}>
+            <Ionicons name="planet-outline" size={20} color="#0A0910" />
+            <Text style={styles.navBtnText}>Chuyên Gia AI</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.navBtn} onPress={() => navigation.navigate('NumberTable')}>
+            <Ionicons name="grid-outline" size={20} color="#0A0910" />
+            <Text style={styles.navBtnText}>Bảng Số</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Card: Số Ngày Sinh */}
         <View style={styles.card}>
           <View style={styles.cardHeader}>
@@ -294,6 +334,38 @@ const CalculatorScreen = () => {
           )}
         </View>
 
+        {/* Card: Số Cá Nhân Theo Thời Gian */}
+        <View style={styles.card}>
+          <View style={styles.cardHeader}>
+            <Ionicons name="time-outline" size={24} color="#CB9F42" />
+            <Text style={styles.cardTitle}>Năng Lượng Hôm Nay</Text>
+          </View>
+          <Text style={styles.cardSubtitle}>Kết hợp ngày sinh của bạn và ngày hiện tại để thấy xu hướng của bạn</Text>
+          <View style={styles.dateInputContainer}>
+            <View style={[styles.dateInputWrapper, { width: '48%' }]}><Text style={styles.inputLabel}>Ngày sinh</Text><TextInput style={styles.inputDate} placeholderTextColor="#777" placeholder="31" value={day} onChangeText={setDay} keyboardType="numeric" /></View>
+            <View style={[styles.dateInputWrapper, { width: '48%' }]}><Text style={styles.inputLabel}>Tháng sinh</Text><TextInput style={styles.inputDate} placeholderTextColor="#777" placeholder="12" value={month} onChangeText={setMonth} keyboardType="numeric" /></View>
+          </View>
+          <TouchableOpacity style={styles.calcBtn} onPress={calculatePersonal}>
+            <Text style={styles.calcBtnText}>Xem Năng Lượng Hôm Nay</Text>
+          </TouchableOpacity>
+          
+          {personalYearNumber !== null && (
+            <View style={styles.resultContainer}>
+              <Text style={styles.resultTitle}>Năm Cá Nhân: {personalYearNumber}</Text>
+              <View style={styles.resultBox}>
+                <Text style={styles.resultDesc}>{numerologyMeaning.personalYear[personalYearNumber]}</Text>
+              </View>
+              
+              <View style={{ marginTop: 20 }}>
+                <Text style={styles.resultTitle}>Ngày Cá Nhân: {personalDayNumber}</Text>
+                <View style={styles.resultBox}>
+                  <Text style={styles.resultDesc}>{numerologyMeaning.personalDay[personalDayNumber]}</Text>
+                </View>
+              </View>
+            </View>
+          )}
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );
@@ -330,7 +402,10 @@ const styles = StyleSheet.create({
   resultTitle: { fontSize: 16, fontWeight: 'bold', color: '#CB9F42', marginBottom: 12, textAlign: 'center' },
   resultBox: { borderTopWidth: 1, borderTopColor: '#332D41', paddingTop: 16 },
   resultName: { fontSize: 16, fontWeight: 'bold', color: '#FFF', marginBottom: 8 },
-  resultDesc: { fontSize: 14, color: '#F0E6D2', lineHeight: 22, fontStyle: 'italic' }
+  resultDesc: { fontSize: 14, color: '#F0E6D2', lineHeight: 22, fontStyle: 'italic' },
+  navRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 20, gap: 12 },
+  navBtn: { flex: 1, backgroundColor: '#CB9F42', borderRadius: 10, padding: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' },
+  navBtnText: { color: '#0A0910', fontWeight: 'bold', marginLeft: 8, fontSize: 13 }
 });
 
 export default CalculatorScreen;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard } from "react-native";
+import { View, Text, FlatList, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, Keyboard, Alert } from "react-native";
 import { db } from "../database/db";
 import NumberBar from "../components/NumberBar";
 import { Ionicons } from '@expo/vector-icons';
@@ -9,19 +9,32 @@ export default function NumberTableScreen() {
   const [numbers, setNumbers] = useState([]);
   const [inputNumbers, setInputNumbers] = useState("");
   const [points, setPoints] = useState(1);
+  const [selectedDate, setSelectedDate] = useState(new Date().toLocaleDateString());
+  const [availableDates, setAvailableDates] = useState([]);
   const [alertConfig, setAlertConfig] = useState({ visible: false, title: "", message: "", type: "info" });
 
   useEffect(() => {
-    loadNumbers();
-  }, []);
+    loadAvailableDates();
+    loadNumbers(selectedDate);
+  }, [selectedDate]);
 
   const showAlert = (title, message, type = "info") => {
     setAlertConfig({ visible: true, title, message, type });
   };
 
-  const loadNumbers = () => {
+  const loadAvailableDates = () => {
+    const rows = db.getAllSync(`SELECT DISTINCT date FROM number_logs ORDER BY date DESC`);
+    const dateList = rows.map(r => r.date);
+    if (!dateList.includes(new Date().toLocaleDateString())) {
+      dateList.unshift(new Date().toLocaleDateString());
+    }
+    setAvailableDates(dateList);
+  };
+
+  const loadNumbers = (date) => {
     const rows = db.getAllSync(
-      `SELECT number,COUNT(*) as count FROM number_logs GROUP BY number ORDER BY count DESC`
+      `SELECT number, COUNT(*) as count FROM number_logs WHERE date = ? GROUP BY number ORDER BY count DESC`,
+      [date]
     );
     setNumbers(rows);
   };
@@ -34,7 +47,7 @@ export default function NumberTableScreen() {
 
     const numStrings = inputNumbers.split(",");
     const date = new Date().toLocaleDateString();
-    
+
     let addedCount = 0;
 
     for (let str of numStrings) {
@@ -53,21 +66,75 @@ export default function NumberTableScreen() {
     if (addedCount > 0) {
       setInputNumbers("");
       Keyboard.dismiss();
-      loadNumbers();
+      loadAvailableDates();
+      loadNumbers(selectedDate);
       showAlert("Thành công", `Đã thêm thành công các số vào bảng!`, "success");
     } else {
       showAlert("Lỗi định dạng", "Không tìm thấy số hợp lệ. Vui lòng nhập định dạng: 12, 34, 56", "error");
     }
   };
 
+  const deleteNumber = (number, date) => {
+    try {
+      db.runSync(`DELETE FROM number_logs WHERE number = ? AND date = ?`, [number, date]);
+      loadNumbers(selectedDate);
+      loadAvailableDates();
+    } catch (e) {
+      console.log('Error deleting number', e);
+    }
+  };
+
+  const clearAll = () => {
+    Alert.alert(
+      "Xác nhận",
+      "Bạn có chắc muốn xóa tất cả bản ghi của ngày này?",
+      [
+        { text: "Hủy", style: "cancel" },
+        {
+          text: "Xóa hết",
+          style: "destructive",
+          onPress: () => {
+            db.runSync(`DELETE FROM number_logs WHERE date = ?`, [selectedDate]);
+            loadNumbers(selectedDate);
+            loadAvailableDates();
+            showAlert("Thành công", "Đã xóa toàn bộ số của ngày này", "success");
+          }
+        }
+      ]
+    );
+  };
+
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <View style={styles.header}>
         <Ionicons name="grid" size={36} color="#CB9F42" style={{ marginBottom: 10 }} />
-        <Text style={styles.title}>BẢNG SỐ</Text>
-        <Text style={styles.dateText}>
-          <Ionicons name="calendar-outline" size={14} /> {new Date().toLocaleDateString('vi-VN')}
-        </Text>
+        <Text style={styles.title}>BẢNG SỐ THEO NGÀY</Text>
+
+        <View style={styles.dateFilterContainer}>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={availableDates}
+            keyExtractor={(item) => item}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                onPress={() => setSelectedDate(item)}
+                style={[
+                  styles.dateChip,
+                  selectedDate === item && styles.dateChipActive
+                ]}
+              >
+                <Text style={[
+                  styles.dateChipText,
+                  selectedDate === item && styles.dateChipTextActive
+                ]}>
+                  {item === new Date().toLocaleDateString() ? "Hôm nay" : item}
+                </Text>
+              </TouchableOpacity>
+            )}
+            contentContainerStyle={styles.dateListContent}
+          />
+        </View>
       </View>
 
       <View style={styles.inputCard}>
@@ -106,22 +173,46 @@ export default function NumberTableScreen() {
             <Text style={styles.emptySub}>Nhập số ở trên để thêm vào bảng</Text>
           </View>
         ) : (
-          <FlatList
-            data={numbers}
-            keyExtractor={(item, index) => `${item.number}-${index}`}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) => (
-              <NumberBar
-                number={item.number}
-                count={item.count}
-                max={numbers[0]?.count || 1}
-              />
-            )}
-          />
+          <>
+            <View style={styles.listHeaderRow}>
+              <Text style={styles.listTotalText}>
+                {numbers.length} SỐ • {numbers.reduce((acc, curr) => acc + curr.count, 0)} ĐIỂM
+              </Text>
+              <TouchableOpacity style={styles.clearAllBtn} onPress={clearAll}>
+                <Ionicons name="trash-outline" size={16} color="#FF6B6B" />
+                <Text style={styles.clearAllText}>Xóa hết</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.tableHeader}>
+              <Text style={[styles.columnHeader, { flex: 0.5 }]}>#</Text>
+              <Text style={[styles.columnHeader, { flex: 1 }]}>Số</Text>
+              <Text style={[styles.columnHeader, { flex: 2, textAlign: 'center' }]}>Ngày</Text>
+              <Text style={[styles.columnHeader, { flex: 1, textAlign: 'center' }]}>Điểm</Text>
+              <Text style={[styles.columnHeader, { flex: 0.5 }]}></Text>
+            </View>
+
+            <FlatList
+              data={numbers}
+              keyExtractor={(item, index) => `${item.number}-${index}`}
+              showsVerticalScrollIndicator={false}
+              renderItem={({ item, index }) => (
+                <View style={styles.tableRow}>
+                  <Text style={[styles.cellText, { flex: 0.5, color: '#A09EAD' }]}>{index + 1}</Text>
+                  <Text style={[styles.cellText, { flex: 1, color: '#CB9F42', fontWeight: 'bold', fontSize: 18 }]}>{item.number}</Text>
+                  <Text style={[styles.cellText, { flex: 2, textAlign: 'center', color: '#A09EAD' }]}>{item.date || selectedDate}</Text>
+                  <Text style={[styles.cellText, { flex: 1, textAlign: 'center', fontWeight: 'bold' }]}>{item.count}</Text>
+                  <TouchableOpacity style={{ flex: 0.5, alignItems: 'center' }} onPress={() => deleteNumber(item.number, selectedDate)}>
+                    <Ionicons name="trash-outline" size={18} color="#FF6B6B" />
+                  </TouchableOpacity>
+                </View>
+              )}
+            />
+          </>
         )}
       </View>
 
-      <CustomAlert 
+      <CustomAlert
         visible={alertConfig.visible}
         title={alertConfig.title}
         message={alertConfig.message}
@@ -241,6 +332,83 @@ const styles = StyleSheet.create({
   },
   emptySub: {
     color: '#A09EAD',
+    fontSize: 14,
+  },
+  dateFilterContainer: {
+    height: 40,
+    marginTop: 10,
+    width: '100%',
+  },
+  dateListContent: {
+    paddingHorizontal: 10,
+  },
+  dateChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: '#1B1924',
+    marginHorizontal: 5,
+    borderWidth: 1,
+    borderColor: '#332D41',
+    justifyContent: 'center',
+    height: 34,
+  },
+  dateChipActive: {
+    backgroundColor: '#CB9F42',
+    borderColor: '#CB9F42',
+  },
+  dateChipText: {
+    color: '#A09EAD',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  dateChipTextActive: {
+    color: '#0A0910',
+    fontWeight: 'bold',
+  },
+  listHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  listTotalText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  clearAllBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  clearAllText: {
+    color: '#FF6B6B',
+    marginLeft: 6,
+    fontSize: 14,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#332D41',
+    paddingBottom: 10,
+    marginBottom: 10,
+  },
+  columnHeader: {
+    color: '#A09EAD',
+    fontSize: 12,
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 14,
+    borderBottomWidth: 1,
+    borderBottomColor: '#1B1924',
+  },
+  cellText: {
+    color: '#FFF',
     fontSize: 14,
   }
 });

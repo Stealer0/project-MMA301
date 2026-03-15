@@ -1,5 +1,6 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Ionicons } from '@expo/vector-icons';
 
 import FortuneScreen from "../screens/FortuneScreen";
@@ -12,6 +13,43 @@ import AIAnalysisScreen from "../screens/AIAnalysisScreen";
 import IntroScreen from "../screens/IntroScreen";
 
 const Tab = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
+
+function HomeStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Intro" component={IntroScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function CalcStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Calculator" component={CalculatorScreen} />
+      <Stack.Screen name="AIAnalysis" component={AIAnalysisScreen} />
+      <Stack.Screen name="NumberTable" component={NumberTableScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function ForecastStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="DayNumber" component={DayNumberScreen} />
+      <Stack.Screen name="Fortune" component={FortuneScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+      <Stack.Screen name="History" component={HistoryScreen} />
+    </Stack.Navigator>
+  );
+}
 
 export default function TabNavigator(){
 
@@ -21,21 +59,13 @@ export default function TabNavigator(){
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === 'Thông Tin') {
-            iconName = focused ? 'book' : 'book-outline';
-          } else if (route.name === 'Thần Số Học') {
-            iconName = focused ? 'calculator' : 'calculator-outline';
-          } else if (route.name === 'Chuyên Gia AI') {
-            iconName = focused ? 'planet' : 'planet-outline';
-          } else if (route.name === 'Bói số') {
+          if (route.name === 'Trang Chủ') {
             iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Bảng') {
-            iconName = focused ? 'grid' : 'grid-outline';
-          } else if (route.name === 'Lịch sử') {
-            iconName = focused ? 'time' : 'time-outline';
-          } else if (route.name === 'Số ngày') {
-            iconName = focused ? 'calendar' : 'calendar-outline';
-          } else if (route.name === 'Hồ sơ') {
+          } else if (route.name === 'Tính Toán') {
+            iconName = focused ? 'calculator' : 'calculator-outline';
+          } else if (route.name === 'Dự Báo') {
+            iconName = focused ? 'sparkles' : 'sparkles-outline';
+          } else if (route.name === 'Cá Nhân') {
             iconName = focused ? 'person' : 'person-outline';
           }
 
@@ -46,6 +76,8 @@ export default function TabNavigator(){
         tabBarStyle: {
           backgroundColor: '#161421',
           borderTopWidth: 0,
+          height: 60,
+          paddingBottom: 8,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -68,14 +100,10 @@ export default function TabNavigator(){
         }
       })}
     >
-      <Tab.Screen name="Thông Tin" component={IntroScreen} />
-      <Tab.Screen name="Thần Số Học" component={CalculatorScreen} />
-      <Tab.Screen name="Chuyên Gia AI" component={AIAnalysisScreen} />
-      <Tab.Screen name="Bói số" component={FortuneScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Bảng" component={NumberTableScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Lịch sử" component={HistoryScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Số ngày" component={DayNumberScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Hồ sơ" component={ProfileScreen} options={{ headerShown: false }} />
+      <Tab.Screen name="Trang Chủ" component={HomeStack} />
+      <Tab.Screen name="Tính Toán" component={CalcStack} />
+      <Tab.Screen name="Dự Báo" component={ForecastStack} />
+      <Tab.Screen name="Cá Nhân" component={ProfileStack} />
     </Tab.Navigator>
   );
-}
+}

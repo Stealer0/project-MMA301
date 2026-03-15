@@ -4,8 +4,9 @@ import { db } from "../database/db";
 import { Ionicons } from '@expo/vector-icons';
 import CustomAlert from "../components/CustomAlert";
 import { useIsFocused } from '@react-navigation/native';
+import { isValidDate } from "../utils/validation";
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   const [name, setName] = useState("");
   const [day, setDay] = useState("");
   const [month, setMonth] = useState("");
@@ -41,6 +42,11 @@ export default function ProfileScreen() {
   const save = () => {
     if (!name || !day || !month || !year) {
       showAlert("Thiếu thông tin", "Vui lòng điền đủ thông tin để lưu hồ sơ.", "warning");
+      return;
+    }
+
+    if (!isValidDate(day, month, year)) {
+      showAlert("Ngày không hợp lệ", "Vui lòng nhập ngày sinh chính xác.", "warning");
       return;
     }
 
@@ -123,6 +129,15 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.saveButton} onPress={save} activeOpacity={0.8}>
             <Text style={styles.saveButtonText}>Lưu hồ sơ</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.saveButton, { backgroundColor: '#1B1924', borderWidth: 1, borderColor: '#CB9F42', marginTop: 16 }]} 
+            onPress={() => navigation.navigate('History')}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="time-outline" size={20} color="#CB9F42" style={{ marginRight: 8 }} />
+            <Text style={[styles.saveButtonText, { color: '#CB9F42' }]}>Xem Lịch Sử</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
