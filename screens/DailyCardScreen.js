@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -7,9 +7,10 @@ import {
   Animated,
   ScrollView,
 } from "react-native";
-import { drawDailyCard } from "../services/tarotService";
+import { drawDailyCard, canUnlockWeekly } from "../services/tarotService";
 import { cards } from "../data/card";
 import { getTarotInsight } from "../services/tarotAIService";
+import { useFocusEffect } from "@react-navigation/native";
 
 const COLORS = {
   bg: "#0D0B14",
@@ -38,6 +39,13 @@ export default function DailyCardScreen({ navigation }) {
   const [revealed, setRevealed] = useState(false);
 const [aiInsight, setAiInsight] = useState("");
 const [loadingAI, setLoadingAI] = useState(false);
+const [isWeeklyReady, setIsWeeklyReady] = useState(false);
+
+useFocusEffect(
+  useCallback(() => {
+    setIsWeeklyReady(canUnlockWeekly());
+  }, [])
+);
   const handleDraw = async () => {
 
   const number = drawDailyCard();
@@ -155,11 +163,23 @@ const handleReset = () => {
 
       {/* Buttons */}
       {!revealed ? (
-        <TouchableOpacity style={styles.drawButton} onPress={handleDraw} activeOpacity={0.8}>
-          <Text style={styles.drawButtonIcon}>✦</Text>
-          <Text style={styles.drawButtonText}>Rút Lá Bài Hôm Nay</Text>
-          <Text style={styles.drawButtonIcon}>✦</Text>
-        </TouchableOpacity>
+        <View style={{ width: "100%", gap: 12 }}>
+          <TouchableOpacity style={styles.drawButton} onPress={handleDraw} activeOpacity={0.8}>
+            <Text style={styles.drawButtonIcon}>✦</Text>
+            <Text style={styles.drawButtonText}>Rút Lá Bài Hôm Nay</Text>
+            <Text style={styles.drawButtonIcon}>✦</Text>
+          </TouchableOpacity>
+          
+          {isWeeklyReady && (
+            <TouchableOpacity 
+              style={[styles.weeklyButton, { flex: 0, width: "100%" }]} 
+              onPress={() => navigation.navigate("WeeklyReport")} 
+              activeOpacity={0.8}
+            >
+              <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       ) : (
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.resetButton} onPress={handleReset} activeOpacity={0.8}>

@@ -6,7 +6,8 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from "react-native";
-import { useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { Ionicons } from '@expo/vector-icons';
 
 import { getWeeklyInsight } from "../services/weeklyInsightService";
 import { getLast7Cards } from "../services/tarotService";
@@ -40,7 +41,7 @@ const NUMBER_COLORS = [
 const DAY_LABELS = ["T2", "T3", "T4", "T5", "T6", "T7", "CN"];
 
 export default function WeeklyReportScreen() {
-
+  const navigation = useNavigation();
   const [insight, setInsight] = useState("");
   const [history, setHistory] = useState([]);
 
@@ -83,6 +84,16 @@ export default function WeeklyReportScreen() {
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
+      {/* Back Button */}
+      <TouchableOpacity 
+        style={styles.backButton} 
+        onPress={() => navigation.goBack()}
+        activeOpacity={0.7}
+      >
+        <Ionicons name="chevron-back" size={24} color={COLORS.gold} />
+        <Text style={styles.backButtonText}>Quay lại</Text>
+      </TouchableOpacity>
+
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.headerRune}>⊛</Text>
@@ -271,4 +282,18 @@ const styles = StyleSheet.create({
   historyInsight: { fontSize: 13, fontFamily: "Georgia", color: COLORS.textSecondary, lineHeight: 22, marginBottom: 14 },
   deleteBtn: { alignSelf: "flex-end", paddingVertical: 6, paddingHorizontal: 12, borderWidth: 1, borderColor: COLORS.danger, borderRadius: 3 },
   deleteBtnText: { fontSize: 12, color: COLORS.danger, letterSpacing: 1, fontFamily: "Georgia" },
+
+  backButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 20,
+    paddingVertical: 8,
+    gap: 4,
+  },
+  backButtonText: {
+    color: COLORS.gold,
+    fontSize: 16,
+    fontFamily: "Georgia",
+  },
 });
