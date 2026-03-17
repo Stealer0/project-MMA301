@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, SafeAreaView, ActivityIndicator, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { db } from '../database/db';
 import axios from 'axios';
 import { isValidDate } from '../utils/validation';
 
-const GEMINI_API_KEY = "AIzaSyBYTGDFVXlSCC64mhIGes8O1D-bjF2K97w";
+const GEMINI_API_KEY = "AIzaSyDGWeTPEl72u1_4YS7ta8BVEtcouJrcjdo";
 
 const letterToNumber = {
   a: 1, j: 1, s: 1,
@@ -68,7 +68,7 @@ const calculateNumbers = (name, day, month, year) => {
   return { birthday, lifePath, maturity, destiny, attitude, balance };
 };
 
-const AIAnalysisScreen = () => {
+const AIAnalysisScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
@@ -178,6 +178,13 @@ const AIAnalysisScreen = () => {
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.container}>
 
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#CB9F42" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>CHUYÊN GIA AI</Text>
+        </View>
+
         {/* Card: Thông Tin Của Bạn */}
         <View style={styles.cardInfo}>
           <View style={styles.cardHeader}>
@@ -260,6 +267,22 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     paddingTop: 0,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingTop: 10,
+  },
+  backButton: {
+    marginRight: 15,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#CB9F42',
+    letterSpacing: 2,
+    fontFamily: Platform.OS === 'ios' ? 'Georgia' : 'serif',
   },
   cardInfo: {
     backgroundColor: '#1B1924',
