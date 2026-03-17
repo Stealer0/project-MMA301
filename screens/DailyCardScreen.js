@@ -49,12 +49,9 @@ useFocusEffect(
   const handleDraw = async () => {
 
   const number = drawDailyCard();
-if (number === null) {
-    setAiInsight("🔮 Bạn đã rút đủ 7 lá bài trong tuần. Hãy xem phần phân tích tuần trước khi rút tiếp.");
-    return;
-  }
   setCard(number);
   setRevealed(true);
+  setIsWeeklyReady(canUnlockWeekly());
 
   setLoadingAI(true);
 
@@ -185,13 +182,15 @@ const handleReset = () => {
           <TouchableOpacity style={styles.resetButton} onPress={handleReset} activeOpacity={0.8}>
             <Text style={styles.resetButtonText}>↺  Rút Lại</Text>
           </TouchableOpacity>
-          <TouchableOpacity 
-            style={styles.weeklyButton} 
-            onPress={() => navigation.navigate("WeeklyReport")} 
-            activeOpacity={0.8}
-          >
-            <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
-          </TouchableOpacity>
+          {isWeeklyReady && (
+            <TouchableOpacity 
+              style={styles.weeklyButton} 
+              onPress={() => navigation.navigate("WeeklyReport")} 
+              activeOpacity={0.8}
+            >
+              <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+            </TouchableOpacity>
+          )}
         </View>
       )}
     </ScrollView>

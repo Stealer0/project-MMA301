@@ -6,17 +6,6 @@ export const drawDailyCard = () => {
 
 
 
-  // kiểm tra đã có bao nhiêu lá
-  const count = db.getFirstSync(`
-    SELECT COUNT(*) as total
-    FROM tarot_history
-  `);
-
-  if (count.total >= 7) {
-    console.log("Bạn đã rút đủ 7 lá trong tuần. Hãy xem phân tích tuần trước khi rút tiếp.");
-    return null;
-  }
-
   const number = Math.floor(Math.random() * 9) + 1;
 
   const today = new Date().toISOString();
