@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_KEY = "AIzaSyBYTGDFVXlSCC64mhIGes8O1D-bjF2K97w";
+const API_KEY = "AIzaSyDXCGV6_o0xfaeRQTIhFA2hVdvyhW9eEuI";
 
 export const getTarotInsight = async (cardTitle, meaning) => {
 

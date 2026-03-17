@@ -6,7 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import CustomAlert from "../components/CustomAlert";
 import { Calendar } from 'react-native-calendars';
 
-export default function NumberTableScreen() {
+export default function NumberTableScreen({ navigation }) {
   const [numbers, setNumbers] = useState([]);
   const [inputNumbers, setInputNumbers] = useState("");
   const [points, setPoints] = useState(1);
@@ -183,6 +183,9 @@ export default function NumberTableScreen() {
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginRight: 15, justifyContent: 'center' }}>
+            <Ionicons name="arrow-back" size={24} color="#CB9F42" />
+          </TouchableOpacity>
           <View style={styles.headerTitleContainer}>
             <Text style={styles.title}>GHI CHÚ</Text>
             <Text style={styles.cuteDateText}>
