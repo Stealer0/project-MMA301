@@ -73,6 +73,7 @@ const AIAnalysisScreen = ({ navigation }) => {
   const [day, setDay] = useState('');
   const [month, setMonth] = useState('');
   const [year, setYear] = useState('');
+  const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState([
     {
@@ -105,7 +106,7 @@ const AIAnalysisScreen = ({ navigation }) => {
   const askGemini = async (prompt) => {
     try {
       const response = await axios.post(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`,
         { contents: [{ parts: [{ text: prompt }] }] },
       );
       return response.data.candidates[0].content.parts[0].text;
@@ -172,6 +173,44 @@ const AIAnalysisScreen = ({ navigation }) => {
         isAi: true
       }
     ]);
+  };
+
+  const handleSendMessage = async () => {
+    if (!inputText.trim()) return;
+
+    const userMessage = {
+      id: Date.now(),
+      text: inputText.trim(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      isAi: false
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    const currentInput = inputText;
+    setInputText('');
+    setIsLoading(true);
+
+    try {
+      // Create context from previous messages for better conversational AI
+      const context = messages.slice(-5).map(m => `${m.isAi ? 'AI' : 'User'}: ${m.text}`).join('\n');
+      const prompt = `Đây là cuộc trò chuyện về Thần số học.\n${context}\nUser: ${currentInput}\nAI:`;
+
+      const aiResponse = await askGemini(prompt);
+
+      setMessages(prev => [
+        ...prev,
+        {
+          id: Date.now() + 1,
+          text: aiResponse,
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          isAi: true
+        }
+      ]);
+    } catch (error) {
+      console.error("Error in handleSendMessage:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -251,6 +290,29 @@ const AIAnalysisScreen = ({ navigation }) => {
                 </View>
               </View>
             ))}
+          </View>
+
+          {/* Chat Input Row */}
+          <View style={styles.chatInputContainer}>
+            <TextInput
+              style={styles.chatInput}
+              placeholder="Hỏi thêm chuyên gia..."
+              placeholderTextColor="#777"
+              value={inputText}
+              onChangeText={setInputText}
+              multiline
+            />
+            <TouchableOpacity 
+              style={[styles.sendBtn, (!inputText.trim() || isLoading) && { opacity: 0.5 }]} 
+              onPress={handleSendMessage}
+              disabled={!inputText.trim() || isLoading}
+            >
+              {isLoading ? (
+                <ActivityIndicator size="small" color="#0A0910" />
+              ) : (
+                <Ionicons name="send" size={20} color="#0A0910" />
+              )}
+            </TouchableOpacity>
           </View>
         </View>
 
@@ -419,7 +481,36 @@ const styles = StyleSheet.create({
     color: '#999',
     marginTop: 8,
     alignSelf: 'flex-start',
-  }
+  },
+  chatInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#332D41',
+    paddingTop: 15,
+  },
+  chatInput: {
+    flex: 1,
+    backgroundColor: '#110F19',
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    color: '#FFF',
+    fontSize: 14,
+    borderWidth: 1,
+    borderColor: '#332D41',
+    maxHeight: 100,
+  },
+  sendBtn: {
+    backgroundColor: '#CB9F42',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 10,
+  },
 });
 
 export default AIAnalysisScreen;
