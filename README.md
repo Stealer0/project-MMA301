@@ -1,65 +1,75 @@
-# Numerology & Tarot Insights App
+# 🔮 Numerology & Tarot Insights
 
-A mobile application built with React Native and Expo that provides personalized numerology readings, AI-powered life analysis, and tarot card forecasts.
+Ứng dụng di động được xây dựng bằng **React Native** và **Expo**, cung cấp các tính năng giải đoán thần số học cá nhân, phân tích cuộc sống bằng trí tuệ nhân tạo (AI) và dự báo qua các lá bài Tarot.
 
-## 🚀 Features
+---
 
-### 🔢 Numerology Calculations
-- **Personal Number Analysis:** Discover your core numbers based on your birth date and name.
-- **Detailed Number Tables:** View a comprehensive breakdown of your numerological profile.
-- **Calculator:** Interactive tools to calculate various numerological aspects.
+## ✨ Tính năng chính
 
-### 🔮 Tarot & Forecasts
-- **Daily Card:** Draw a tarot card every day for personalized guidance.
-- **Weekly Report:** Get a broader perspective with a detailed weekly forecast.
-- **Fortune Readings:** Explore your luck and destiny through various lenses.
+### 🔢 Thần Số Học (Numerology)
+- **Số Chủ Đạo:** Khám phá con số cốt lõi và ý nghĩa cuộc đời dựa trên ngày sinh và tên của bạn.
+- **Bảng Số Chi Tiết:** Xem phân tích chuyên sâu về các chỉ số năng lượng trong hồ sơ thần số học.
+- **Công cụ tính toán (Calculator):** Các công cụ tương tác giúp tính toán nhanh các khía cạnh thần số học khác nhau.
 
-### 🤖 AI Analysis
-- **Deep Insights:** Utilize AI to analyze your profiles and provide deeper spiritual and practical guidance.
+### 🃏 Tarot & Dự Báo
+- **Rút Bài Hàng Ngày:** Rút một lá bài mỗi ngày để nhận được lời khuyên và thông điệp cá nhân hóa.
+- **Báo Cáo Tuần:** Tổng hợp năng lượng của 7 ngày để đưa ra cái nhìn tổng quan và lời khuyên cho tuần tiếp theo.
+- **Bói Số Huyền Bí:** Đặt câu hỏi và nhận giải đáp từ các vì sao thông qua sự kết hợp giữa con số và AI.
 
-### 👤 Profile & History
-- **Personalized Profile:** Save your details for quick calculations.
-- **Reading History:** Keep track of your past tarot draws and numerology sessions.
+### 🤖 Phân Tích Bằng AI (Gemini AI)
+- **Thấu Hiểu Chuyên Sâu:** Sử dụng công nghệ **Gemini AI** để phân tích hồ sơ người dùng, mang lại những lời khuyên tâm linh và thực tế đầy cảm hứng.
+- **Tương tác thông minh:** Trò chuyện với chuyên gia AI để giải đáp các thắc mắc về vận mệnh và tính cách.
 
-## 🛠️ Technology Stack
+### 👤 Hồ Sơ & Lịch Sử
+- **Cá nhân hóa:** Lưu trữ thông tin cá nhân (tên, ngày sinh) để ứng dụng tự động tính toán các chỉ số.
+- **Lịch Sử Xem Bài:** Theo dõi lại các lần rút bài Tarot và các phiên phân tích thần số học trước đó.
 
-- **Framework:** [React Native](https://reactnative.dev/) with [Expo](https://expo.dev/)
+---
+
+## 🛠️ Công Nghệ Sử Dụng
+
+- **Framework:** [React Native](https://reactnative.dev/) với [Expo](https://expo.dev/)
 - **Navigation:** [React Navigation](https://reactnavigation.org/) (Bottom Tabs & Native Stack)
-- **Database:** [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/) for local data persistence
-- **Icons:** [Ionicons](https://ionicons.com/) (via Expo Vector Icons)
-- **API Handling:** [Axios](https://axios-http.com/) for external services (AI Analysis)
+- **Database:** [Expo SQLite](https://docs.expo.dev/versions/latest/sdk/sqlite/) - Lưu trữ dữ liệu cục bộ an toàn.
+- **Icons:** [Ionicons](https://ionicons.com/) (qua Expo Vector Icons)
+- **Networking:** [Axios](https://axios-http.com/) - Kết nối với dịch vụ Gemini AI.
+- **AI Integration:** Google Generative AI (Gemini API).
 
-## 📦 Installation & Setup
+---
 
-1. **Clone the repository:**
+## 📦 Cài Đặt & Chạy Ứng Dụng
+
+1. **Clone repository:**
    ```bash
    git clone <repository-url>
    cd project
    ```
 
-2. **Install dependencies:**
+2. **Cài đặt các thư viện bổ trợ:**
    ```bash
    npm install
    ```
 
-3. **Start the development server:**
+3. **Chạy server phát triển:**
    ```bash
    npx expo start
    ```
 
-4. **Run on a device:**
-   - Scan the QR code with the **Expo Go** app (Android) or **Camera app** (iOS).
-
-## 📂 Project Structure
-
-- `screens/`: Individual screen components (Calculator, Fortune, Tarot, etc.).
-- `navigation/`: Navigation configuration and stacks.
-- `database/`: SQLite initialization and helper functions.
-- `components/`: Reusable UI components.
-- `assets/`: Images, fonts, and local resources.
-- `utils/`: Utility functions and helper logic.
-- `services/`: API calls and external services.
+4. **Chạy trên thiết bị:**
+   - Quét mã QR bằng ứng dụng **Expo Go** (Android) hoặc **Camera** (iOS).
 
 ---
 
-*Developed as part of the MMA301 project.*
+## 📂 Cấu Trúc Thư Mục
+
+- `screens/`: Chứa các màn hình chính (Calculator, Fortune, Tarot, v.v.).
+- `services/`: Xử lý logic API và kết nối với Gemini AI.
+- `database/`: Cấu hình SQLite và các hàm tương tác dữ liệu.
+- `navigation/`: Cấu hình điều hướng giữa các màn hình.
+- `components/`: Các thành phần giao diện (UI) có thể tái sử dụng.
+- `data/`: Chứa dữ liệu tĩnh (danh sách các lá bài Tarot, v.v.).
+- `utils/`: Các hàm hỗ trợ và logic xử lý chung.
+
+---
+
+*Dự án được phát triển như một phần của môn học MMA301.*

@@ -14,7 +14,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from "@react-navigation/native";
 import CustomAlert from "../components/CustomAlert";
 
-const GEMINI_API_KEY = "AIzaSyBQV2xYSnPZdt1j-jy21CdmEvhdTibNs3U";
+const GEMINI_API_KEY = "AIzaSyA753PGSAHkZJ-lSmXJOZ9LeSGuNIpIfT8";
 
 export default function DayNumberScreen({ navigation }) {
   const [result, setResult] = useState(null);

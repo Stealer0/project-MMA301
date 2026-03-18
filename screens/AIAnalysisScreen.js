@@ -5,7 +5,7 @@ import { db } from '../database/db';
 import axios from 'axios';
 import { isValidDate } from '../utils/validation';
 
-const GEMINI_API_KEY = "AIzaSyDGWeTPEl72u1_4YS7ta8BVEtcouJrcjdo";
+const GEMINI_API_KEY = "AIzaSyA753PGSAHkZJ-lSmXJOZ9LeSGuNIpIfT8";
 
 const letterToNumber = {
   a: 1, j: 1, s: 1,

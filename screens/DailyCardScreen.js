@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Animated,
   ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { drawDailyCard, canUnlockWeekly } from "../services/tarotService";
 import { cards } from "../data/card";
@@ -70,143 +71,145 @@ const handleReset = () => {
   setLoadingAI(false);
 };
   return (
-    <ScrollView 
-      style={styles.scrollView} 
-      contentContainerStyle={styles.container}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Stars background decoration */}
-      <View style={styles.starsRow}>
-        {["·", "✦", "·", "·", "✦", "·", "✦", "·", "·"].map((s, i) => (
-          <Text key={i} style={[styles.star, { opacity: 0.2 + (i % 3) * 0.15 }]}>{s}</Text>
-        ))}
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.container}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Stars background decoration */}
+        <View style={styles.starsRow}>
+          {["·", "✦", "·", "·", "✦", "·", "✦", "·", "·"].map((s, i) => (
+            <Text key={i} style={[styles.star, { opacity: 0.2 + (i % 3) * 0.15 }]}>{s}</Text>
+          ))}
+        </View>
 
-      {/* Title area */}
-      <View style={styles.titleArea}>
-        <Text style={styles.eyebrow}>✦ ✦ ✦</Text>
-        <Text style={styles.title}>Numerology Tarot</Text>
-        <Text style={styles.subtitle}>Lá bài số học hôm nay</Text>
-      </View>
+        {/* Title area */}
+        <View style={styles.titleArea}>
+          <Text style={styles.eyebrow}>✦ ✦ ✦</Text>
+          <Text style={styles.title}>Numerology Tarot</Text>
+          <Text style={styles.subtitle}>Lá bài số học hôm nay</Text>
+        </View>
 
-      {/* Card Display */}
-      {!revealed ? (
-        // Face down card
-        <View style={styles.cardFaceDown}>
-          <View style={styles.cardInner}>
-            <Text style={styles.cardBackSymbol}>✦</Text>
-            <View style={styles.cardBackPattern}>
-              {[...Array(3)].map((_, i) => (
-                <View key={i} style={[styles.cardBackRing, {
-                  width: 60 + i * 40,
-                  height: 60 + i * 40,
-                  borderRadius: (60 + i * 40) / 2,
-                  opacity: 0.15 - i * 0.03,
-                }]} />
-              ))}
+        {/* Card Display */}
+        {!revealed ? (
+          // Face down card
+          <View style={styles.cardFaceDown}>
+            <View style={styles.cardInner}>
+              <Text style={styles.cardBackSymbol}>✦</Text>
+              <View style={styles.cardBackPattern}>
+                {[...Array(3)].map((_, i) => (
+                  <View key={i} style={[styles.cardBackRing, {
+                    width: 60 + i * 40,
+                    height: 60 + i * 40,
+                    borderRadius: (60 + i * 40) / 2,
+                    opacity: 0.15 - i * 0.03,
+                  }]} />
+                ))}
+              </View>
+              <Text style={styles.cardBackText}>Chạm để khám phá</Text>
             </View>
-            <Text style={styles.cardBackText}>Chạm để khám phá</Text>
           </View>
-        </View>
-      ) : (
-        // Revealed card
-        <View style={styles.cardRevealed}>
-          <View style={styles.cardRevealedInner}>
-            {/* Top symbol */}
-            <Text style={styles.symbolSmall}>{NUMBER_SYMBOLS[card] || "✦"}</Text>
+        ) : (
+          // Revealed card
+          <View style={styles.cardRevealed}>
+            <View style={styles.cardRevealedInner}>
+              {/* Top symbol */}
+              <Text style={styles.symbolSmall}>{NUMBER_SYMBOLS[card] || "✦"}</Text>
 
-            {/* Number */}
-            <View style={styles.numberContainer}>
-              <Text style={styles.numberDisplay}>{card}</Text>
+              {/* Number */}
+              <View style={styles.numberContainer}>
+                <Text style={styles.numberDisplay}>{card}</Text>
+              </View>
+
+              {/* Divider */}
+              <View style={styles.cardDivider}>
+                <View style={styles.cardDividerLine} />
+                <Text style={styles.cardDividerDot}>◈</Text>
+                <View style={styles.cardDividerLine} />
+              </View>
+
+              {/* Card title */}
+              <Text style={styles.cardTitle}>
+                {cards[card]?.title || "Bí Ẩn"}
+              </Text>
+
+              {/* Bottom symbol */}
+              <Text style={styles.symbolSmall}>{NUMBER_SYMBOLS[card] || "✦"}</Text>
             </View>
-
-            {/* Divider */}
-            <View style={styles.cardDivider}>
-              <View style={styles.cardDividerLine} />
-              <Text style={styles.cardDividerDot}>◈</Text>
-              <View style={styles.cardDividerLine} />
-            </View>
-
-            {/* Card title */}
-            <Text style={styles.cardTitle}>
-              {cards[card]?.title || "Bí Ẩn"}
-            </Text>
-
-            {/* Bottom symbol */}
-            <Text style={styles.symbolSmall}>{NUMBER_SYMBOLS[card] || "✦"}</Text>
           </View>
-        </View>
-      )}
+        )}
 
-      {/* Meaning */}
-      {card && cards[card] && (
-        <View style={styles.meaningCard}>
-          <Text style={styles.meaningLabel}>Ý Nghĩa</Text>
-          <Text style={styles.meaningText}>{cards[card].meaning}</Text>
-        </View>
-      )}
+        {/* Meaning */}
+        {card && cards[card] && (
+          <View style={styles.meaningCard}>
+            <Text style={styles.meaningLabel}>Ý Nghĩa</Text>
+            <Text style={styles.meaningText}>{cards[card].meaning}</Text>
+          </View>
+        )}
 
-      {loadingAI ? (
-  <Text style={styles.aiLoading}>AI đang đọc lá bài của bạn...</Text>
-) : (
-  aiInsight !== "" && (
-    <View style={styles.aiCard}>
-      <Text style={styles.aiTitle}>✨ AI Insight</Text>
-      <Text style={styles.aiText}>{aiInsight}</Text>
-    </View>
-  )
-)}
-      
+        {loadingAI ? (
+          <Text style={styles.aiLoading}>AI đang đọc lá bài của bạn...</Text>
+        ) : (
+          aiInsight !== "" && (
+            <View style={styles.aiCard}>
+              <Text style={styles.aiTitle}>✨ AI Insight</Text>
+              <Text style={styles.aiText}>{aiInsight}</Text>
+            </View>
+          )
+        )}
+        
 
-      {/* Buttons */}
-      {!revealed ? (
-        <View style={{ width: "100%", gap: 12 }}>
-          <TouchableOpacity style={styles.drawButton} onPress={handleDraw} activeOpacity={0.8}>
-            <Text style={styles.drawButtonIcon}>✦</Text>
-            <Text style={styles.drawButtonText}>Rút Lá Bài Hôm Nay</Text>
-            <Text style={styles.drawButtonIcon}>✦</Text>
-          </TouchableOpacity>
-          
-          {isWeeklyReady && (
-            <TouchableOpacity 
-              style={[styles.weeklyButton, { flex: 0, width: "100%" }]} 
-              onPress={() => navigation.navigate("WeeklyReport")} 
-              activeOpacity={0.8}
-            >
-              <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+        {/* Buttons */}
+        {!revealed ? (
+          <View style={{ width: "100%", gap: 12 }}>
+            <TouchableOpacity style={styles.drawButton} onPress={handleDraw} activeOpacity={0.8}>
+              <Text style={styles.drawButtonIcon}>✦</Text>
+              <Text style={styles.drawButtonText}>Rút Lá Bài Hôm Nay</Text>
+              <Text style={styles.drawButtonIcon}>✦</Text>
             </TouchableOpacity>
-          )}
-        </View>
-      ) : (
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.resetButton} onPress={handleReset} activeOpacity={0.8}>
-            <Text style={styles.resetButtonText}>↺  Rút Lại</Text>
-          </TouchableOpacity>
-          {isWeeklyReady && (
+            
             <TouchableOpacity 
-              style={styles.weeklyButton} 
-              onPress={() => navigation.navigate("WeeklyReport")} 
-              activeOpacity={0.8}
-            >
-              <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+            style={[styles.weeklyButton, { flex: 0, width: "100%" }]} 
+            onPress={() => navigation.navigate("WeeklyReport")} 
+            activeOpacity={0.8}
+          >
+            <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+          </TouchableOpacity>  
+          </View>
+        ) : (
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.resetButton} onPress={handleReset} activeOpacity={0.8}>
+              <Text style={styles.resetButtonText}>↺  Rút Lại</Text>
             </TouchableOpacity>
-          )}
-        </View>
-      )}
-    </ScrollView>
+            <TouchableOpacity 
+            style={styles.weeklyButton} 
+            onPress={() => navigation.navigate("WeeklyReport")} 
+            activeOpacity={0.8}
+          >
+            <Text style={styles.weeklyButtonText}>📜  Báo Cáo Tuần</Text>
+          </TouchableOpacity>  
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
+  safeArea: {
     flex: 1,
     backgroundColor: COLORS.bg,
   },
+  scrollView: {
+    flex: 1,
+  },
   container: {
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     paddingHorizontal: 32,
-    paddingVertical: 10,
+    paddingTop: 40,
+    paddingBottom: 40,
     minHeight: "100%",
   },
 

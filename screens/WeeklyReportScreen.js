@@ -5,6 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  SafeAreaView,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Ionicons } from '@expo/vector-icons';
@@ -79,135 +80,138 @@ export default function WeeklyReportScreen() {
   };
 
   return (
-    <ScrollView
-      style={styles.container}
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
-      {/* Back Button */}
-      <TouchableOpacity 
-        style={styles.backButton} 
-        onPress={() => navigation.goBack()}
-        activeOpacity={0.7}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.content}
+        showsVerticalScrollIndicator={false}
       >
-        <Ionicons name="chevron-back" size={24} color={COLORS.gold} />
-        <Text style={styles.backButtonText}>Quay lại</Text>
-      </TouchableOpacity>
+        {/* Back Button */}
+        <TouchableOpacity 
+          style={styles.backButton} 
+          onPress={() => navigation.goBack()}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="chevron-back" size={24} color={COLORS.gold} />
+          <Text style={styles.backButtonText}>Quay lại</Text>
+        </TouchableOpacity>
 
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerRune}>⊛</Text>
-        <Text style={styles.headerTitle}>Weekly Energy Report</Text>
-        <Text style={styles.headerSub}>Báo cáo năng lượng tuần</Text>
-      </View>
-
-      {/* Cards this week — progress tracker */}
-      <View style={styles.progressCard}>
-        <View style={styles.progressCardHeader}>
-          <Text style={styles.sectionLabel}>Cards this week</Text>
-          <View style={styles.progressBadge}>
-            <Text style={styles.progressCurrent}>{numbers.length}</Text>
-            <Text style={styles.progressTotal}>/7</Text>
-          </View>
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.headerRune}>⊛</Text>
+          <Text style={styles.headerTitle}>Weekly Energy Report</Text>
+          <Text style={styles.headerSub}>Báo cáo năng lượng tuần</Text>
         </View>
 
-        <View style={styles.dayTracker}>
-          {[...Array(7)].map((_, i) => {
-            const filled = i < numbers.length;
-            return (
-              <View key={i} style={styles.dayCol}>
-                <View
-                  style={[
-                    styles.chip,
-                    filled
-                      ? { backgroundColor: NUMBER_COLORS[i], borderColor: NUMBER_COLORS[i] }
-                      : styles.chipEmpty,
-                  ]}
-                >
-                  <Text style={[styles.chipText, filled ? styles.chipTextFilled : styles.chipTextEmpty]}>
-                    {filled ? numbers[i] : "·"}
+        {/* Cards this week — progress tracker */}
+        <View style={styles.progressCard}>
+          <View style={styles.progressCardHeader}>
+            <Text style={styles.sectionLabel}>Cards this week</Text>
+            <View style={styles.progressBadge}>
+              <Text style={styles.progressCurrent}>{numbers.length}</Text>
+              <Text style={styles.progressTotal}>/7</Text>
+            </View>
+          </View>
+
+          <View style={styles.dayTracker}>
+            {[...Array(7)].map((_, i) => {
+              const filled = i < numbers.length;
+              return (
+                <View key={i} style={styles.dayCol}>
+                  <View
+                    style={[
+                      styles.chip,
+                      filled
+                        ? { backgroundColor: NUMBER_COLORS[i], borderColor: NUMBER_COLORS[i] }
+                        : styles.chipEmpty,
+                    ]}
+                  >
+                    <Text style={[styles.chipText, filled ? styles.chipTextFilled : styles.chipTextEmpty]}>
+                      {filled ? numbers[i] : "·"}
+                    </Text>
+                  </View>
+                  <Text style={[styles.dayLabel, filled && styles.dayLabelFilled]}>
+                    {DAY_LABELS[i]}
                   </Text>
                 </View>
-                <Text style={[styles.dayLabel, filled && styles.dayLabelFilled]}>
-                  {DAY_LABELS[i]}
-                </Text>
-              </View>
-            );
-          })}
-        </View>
-
-        <View style={styles.progressBarTrack}>
-          <View style={[styles.progressBarFill, { width: `${(numbers.length / 7) * 100}%` }]} />
-        </View>
-      </View>
-
-      {/* Analyze button */}
-      <TouchableOpacity
-        style={[styles.analyzeBtn, numbers.length < 7 && styles.analyzeBtnDisabled]}
-        onPress={handleAnalyze}
-        disabled={numbers.length < 7}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.analyzeBtnIcon}>🔮</Text>
-        <Text style={[styles.analyzeBtnText, numbers.length < 7 && styles.analyzeBtnTextMuted]}>
-          {numbers.length < 7 ? `Cần thêm ${7 - numbers.length} ngày nữa` : "Analyze My Week"}
-        </Text>
-      </TouchableOpacity>
-
-      {/* Insight */}
-      {insight ? (
-        <View style={styles.insightCard}>
-          <View style={styles.insightTopBar}>
-            <Text style={styles.insightTopBarText}>✦  WEEKLY INSIGHT  ✦</Text>
-          </View>
-          <Text style={styles.insightText}>{insight}</Text>
-        </View>
-      ) : null}
-
-      {/* Weekly Journal */}
-      {history.length > 0 && (
-        <>
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerLabel}>📜  Weekly Journal</Text>
-            <View style={styles.dividerLine} />
+              );
+            })}
           </View>
 
-          {history.map((item) => (
-            <View key={item.id} style={styles.historyCard}>
-              <View style={styles.historyAccent} />
-              <View style={styles.historyBody}>
-                <View style={styles.historyChipRow}>
-                  {item.numbers.split(",").map((n, i) => (
-                    <View key={i} style={[styles.historyChip, { borderColor: NUMBER_COLORS[i % 7] }]}>
-                      <Text style={[styles.historyChipText, { color: NUMBER_COLORS[i % 7] }]}>
-                        {n.trim()}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
+          <View style={styles.progressBarTrack}>
+            <View style={[styles.progressBarFill, { width: `${(numbers.length / 7) * 100}%` }]} />
+          </View>
+        </View>
 
-                <Text style={styles.historyInsight}>{item.insight}</Text>
+        {/* Analyze button */}
+        <TouchableOpacity
+          style={[styles.analyzeBtn, numbers.length < 7 && styles.analyzeBtnDisabled]}
+          onPress={handleAnalyze}
+          disabled={numbers.length < 7}
+          activeOpacity={0.8}
+        >
+          <Text style={styles.analyzeBtnIcon}>🔮</Text>
+          <Text style={[styles.analyzeBtnText, numbers.length < 7 && styles.analyzeBtnTextMuted]}>
+            {numbers.length < 7 ? `Cần thêm ${7 - numbers.length} ngày nữa` : "Analyze My Week"}
+          </Text>
+        </TouchableOpacity>
 
-                <TouchableOpacity
-                  style={styles.deleteBtn}
-                  onPress={() => handleDelete(item.id)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={styles.deleteBtnText}>✕  Xóa</Text>
-                </TouchableOpacity>
-              </View>
+        {/* Insight */}
+        {insight ? (
+          <View style={styles.insightCard}>
+            <View style={styles.insightTopBar}>
+              <Text style={styles.insightTopBarText}>✦  WEEKLY INSIGHT  ✦</Text>
             </View>
-          ))}
-        </>
-      )}
-    </ScrollView>
+            <Text style={styles.insightText}>{insight}</Text>
+          </View>
+        ) : null}
+
+        {/* Weekly Journal */}
+        {history.length > 0 && (
+          <>
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerLabel}>📜  Weekly Journal</Text>
+              <View style={styles.dividerLine} />
+            </View>
+
+            {history.map((item) => (
+              <View key={item.id} style={styles.historyCard}>
+                <View style={styles.historyAccent} />
+                <View style={styles.historyBody}>
+                  <View style={styles.historyChipRow}>
+                    {item.numbers.split(",").map((n, i) => (
+                      <View key={i} style={[styles.historyChip, { borderColor: NUMBER_COLORS[i % 7] }]}>
+                        <Text style={[styles.historyChipText, { color: NUMBER_COLORS[i % 7] }]}>
+                          {n.trim()}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+
+                  <Text style={styles.historyInsight}>{item.insight}</Text>
+
+                  <TouchableOpacity
+                    style={styles.deleteBtn}
+                    onPress={() => handleDelete(item.id)}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.deleteBtnText}>✕  Xóa</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            ))}
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
-  content: { padding: 20, paddingTop: 0, paddingBottom: 48 },
+  safeArea: { flex: 1, backgroundColor: COLORS.bg },
+  container: { flex: 1 },
+  content: { padding: 20, paddingTop: 20, paddingBottom: 48 },
 
   header: { alignItems: "center", marginBottom: 28 },
   headerRune: { fontSize: 32, color: COLORS.goldDim, marginBottom: 12 },
